@@ -1,0 +1,6 @@
+version: "1.0.0"
+description: ESP-WiFi-Connect-SmartConfig AirKiss example
+dependencies:
+  fengmoxi/esp-wifi-connect-smartconfig:
+    version: '~2.4.3'
+    override_path: '../../../' # three levels up, pointing to the directory with the component itself

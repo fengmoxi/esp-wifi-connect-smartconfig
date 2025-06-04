@@ -1,4 +1,4 @@
-#include "wifi_station.h"
+#include "sc_wifi_station.h"
 #include <cstring>
 #include <algorithm>
 
@@ -10,7 +10,7 @@
 #include "nvs_flash.h"
 #include <esp_netif.h>
 #include <esp_system.h>
-#include "ssid_manager.h"
+#include "sc_ssid_manager.h"
 
 #define TAG "wifi"
 #define WIFI_EVENT_CONNECTED BIT0

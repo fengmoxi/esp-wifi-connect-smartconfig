@@ -11,28 +11,27 @@
 #include <esp_netif.h>
 #include <esp_wifi_types_generic.h>
 
-#include "dns_server.h"
+#include "sc_dns_server.h"
+#include <esp_smartconfig.h>
 
-class WifiConfigurationAp {
+class WifiConfigurationSc {
 public:
-    static WifiConfigurationAp& GetInstance();
-    void SetSsidPrefix(const std::string &&ssid_prefix);
-    void SetLanguage(const std::string &&language);
+    static WifiConfigurationSc& GetInstance();
+    void SetSmartConfigType(const smartconfig_type_t type);
     void Start();
     void Stop();
-    void StartSmartConfig();
 
     std::string GetSsid();
     std::string GetWebServerUrl();
 
     // Delete copy constructor and assignment operator
-    WifiConfigurationAp(const WifiConfigurationAp&) = delete;
-    WifiConfigurationAp& operator=(const WifiConfigurationAp&) = delete;
+    WifiConfigurationSc(const WifiConfigurationSc&) = delete;
+    WifiConfigurationSc& operator=(const WifiConfigurationSc&) = delete;
 
 private:
     // Private constructor
-    WifiConfigurationAp();
-    ~WifiConfigurationAp();
+    WifiConfigurationSc();
+    ~WifiConfigurationSc();
 
     std::mutex mutex_;
     DnsServer dns_server_;
@@ -40,8 +39,10 @@ private:
     EventGroupHandle_t event_group_;
     std::string ssid_prefix_;
     std::string language_;
-    esp_event_handler_instance_t instance_any_id_;
-    esp_event_handler_instance_t instance_got_ip_;
+    smartconfig_type_t smartconfig_type_;
+    esp_event_handler_instance_t instance_any_id_ = nullptr;
+    esp_event_handler_instance_t instance_got_ip_ = nullptr;
+    esp_event_handler_instance_t sc_event_instance_ = nullptr;
     esp_timer_handle_t scan_timer_ = nullptr;
     bool is_connecting_ = false;
     esp_netif_t* ap_netif_ = nullptr;
@@ -62,7 +63,8 @@ private:
     static void IpEventHandler(void* arg, esp_event_base_t event_base, int32_t event_id, void* event_data);
     static void SmartConfigEventHandler(void* arg, esp_event_base_t event_base, 
                                       int32_t event_id, void* event_data);
-    esp_event_handler_instance_t sc_event_instance_ = nullptr;
+
+    static void smartconfig_task(void * parm);
 };
 
 #endif // _WIFI_CONFIGURATION_AP_H_
