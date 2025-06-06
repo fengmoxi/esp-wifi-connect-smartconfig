@@ -14,10 +14,13 @@
 #include "sc_dns_server.h"
 #include <esp_smartconfig.h>
 
+typedef void (*wifi_cfg_sc_cb_t)();
+
 class WifiConfigurationSc {
 public:
     static WifiConfigurationSc& GetInstance();
     void SetSmartConfigType(const smartconfig_type_t type);
+    void SetCallback(wifi_cfg_sc_cb_t callback);
     void Start();
     void Stop();
 
@@ -29,9 +32,14 @@ public:
     WifiConfigurationSc& operator=(const WifiConfigurationSc&) = delete;
 
 private:
+    wifi_cfg_sc_cb_t callback_ = nullptr; // 回调函数指针
+
     // Private constructor
     WifiConfigurationSc();
     ~WifiConfigurationSc();
+
+    char ssid[33] = { 0 };
+    char password[65] = { 0 };
 
     std::mutex mutex_;
     DnsServer dns_server_;

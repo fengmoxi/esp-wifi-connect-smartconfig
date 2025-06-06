@@ -9,6 +9,7 @@
 
 #include "esp_wifi.h"
 #include "esp_event.h"
+#include <esp_log.h>
 
 #include <sc_wifi_station.h>
 #include <sc_wifi_configuration.h>
@@ -37,6 +38,9 @@ extern "C" void app_main(void)
         // Start the Wi-Fi configuration AP
         auto &ap = WifiConfigurationSc::GetInstance();
         ap.SetSmartConfigType(SC_TYPE_AIRKISS);
+        ap.SetCallback([]() {
+            ESP_LOGI(TAG, "CallBack!!!");
+        });
         ap.Start();
         return;
     }
